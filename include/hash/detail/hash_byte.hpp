@@ -7,7 +7,7 @@
 #include <span>
 #include <type_traits>
 
-#include "hash/available_as_byte.hpp"
+#include "hash/hash_concepts.hpp"
 
 namespace reki::detail
 {
