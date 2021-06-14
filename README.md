@@ -31,7 +31,7 @@ constexpr auto view_result = reki::hash<std::string_view>{}(view_text);
 
 constexpr auto char_result = reki::hash<const char*>{}(char_text);
 
-static_assert(view_result == array_result);
+static_assert(view_result == char_result);
 
 assert(view_result == std::hash<std::string_view>{}(view_text));
 ```
