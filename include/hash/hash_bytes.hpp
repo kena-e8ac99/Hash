@@ -6,6 +6,7 @@
 #include <span>
 #include <type_traits>
 
+#include "hash/hash_combine.hpp"
 #include "hash/hash_concepts.hpp"
 #include "hash/detail/hash_bytes.hpp"
 
@@ -33,11 +34,13 @@ namespace reki
   constexpr std::size_t hash_bytes(std::span<const T, N> value,
                                    std::size_t           seed = 0xc70f6907UL)
   {
+    auto result = hash_bytes(*std::ranges::begin(value), seed);
+
     std::ranges::for_each(
-      value,
-      [&seed](const auto& value)
+      std::ranges::begin(value) + 1, std::ranges::end(value),
+      [&result, seed = std::move(seed)](const auto& value)
       {
-        seed = hash_bytes(value, seed);
+        hash_combine(result, hash_bytes(value, seed));
       });
 
     return seed;
@@ -67,11 +70,13 @@ namespace reki
     fnv_hash_bytes(std::span<const T, N> value,
                    std::size_t           seed = 2166136261UL)
   {
+    auto result = fnv_hash_bytes(*std::ranges::begin(value), seed);
+
     std::ranges::for_each(
-      value,
-      [&seed](const auto& value)
+      std::ranges::begin(value) + 1, std::ranges::end(value),
+      [&result, seed = std::move(seed)](const auto& value)
       {
-        seed = fnv_hash_bytes(value, seed);
+        hash_combine(result, fnv_hash_bytes(value, seed));
       });
 
     return seed;
