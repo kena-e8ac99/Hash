@@ -23,7 +23,7 @@ int main()
 
       constexpr auto result2 = reki::hash<type>{}(value2);
 
-      expect(eq(result1, std::size_t{0}));
+      expect(neq(result1, std::size_t{0}));
 
       expect(eq(result1, result2));
     };
@@ -41,7 +41,7 @@ int main()
 
       constexpr auto result2 = reki::hash<type>{}(value2);
 
-      expect(eq(result1, std::size_t{0}));
+      expect(neq(result1, std::size_t{0}));
 
       expect(eq(result1, result2));
     };
