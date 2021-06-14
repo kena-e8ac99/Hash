@@ -1,5 +1,6 @@
 #include "hash/hash_concepts.hpp"
 
+#include <array>
 #include <cstddef>
 #include <cstdint>
 
@@ -31,5 +32,26 @@ int main()
       expect(constant<!reki::available_as_byte<float>>);
 
       expect(constant<!reki::available_as_byte<std::string>>);
+    };
+
+  "costeval_bit_castable"_test =
+    []()
+    {
+      expect(constant<reki::consteval_bit_castable<bool>>);
+
+      expect(constant<reki::consteval_bit_castable<int>>);
+
+      expect(constant<reki::consteval_bit_castable<float>>);
+
+      expect(constant<reki::consteval_bit_castable<
+                        std::array<std::size_t, 10>>>);
+    };
+
+  "!consteval_bit_castable"_test =
+    []()
+    {
+      expect(constant<!reki::consteval_bit_castable<std::string>>);
+
+      expect(constant<!reki::consteval_bit_castable<std::vector<std::byte>>>);
     };
 }
