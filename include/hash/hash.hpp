@@ -61,7 +61,8 @@ namespace reki
 
   template <consteval_bit_castable T>
   requires (!std::integral<T>  && !std::floating_point<T> &&
-            !std::is_enum_v<T> && !std::same_as<T, std::nullptr_t>)
+            !std::is_enum_v<T> && !std::same_as<T, std::nullptr_t> &&
+            !std::ranges::input_range<T>)
   struct hash<T> final
   {
     constexpr std::size_t operator()(const T& value) const
@@ -95,8 +96,7 @@ namespace reki
   };
 
   template <std::ranges::input_range T>
-  requires (!consteval_bit_castable<T>) &&
-           std::default_initializable<hash<std::ranges::range_value_t<T>>>
+  requires std::default_initializable<hash<std::ranges::range_value_t<T>>>
   struct hash<T> final
   {
     constexpr std::size_t operator()(const T& value) const
