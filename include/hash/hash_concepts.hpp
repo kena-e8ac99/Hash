@@ -1,6 +1,7 @@
 #pragma once
 
 #include <concepts>
+#include <cstddef>
 #include <limits>
 #include <type_traits>
 
@@ -19,4 +20,14 @@ namespace reki
   concept available_as_byte
   = detail::available_as_byte<T> ||
     detail::available_as_byte<std::underlying_type_t<T>>;
+
+  // NOTE:
+  // Although not written in the code, this concept requires
+  // "has no non-static data member of reference type".
+  // Compile error will occur if a type that does'nt meet the above requirement.
+  template <typename T>
+  concept consteval_bit_castable
+  = std::is_trivially_copyable_v<T> &&
+    (!std::is_union_v<T> && !std::is_pointer_v<T> &&
+     !std::is_member_pointer_v<T> && !std::is_volatile_v<T>);
 }
