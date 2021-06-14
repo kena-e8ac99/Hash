@@ -6,15 +6,14 @@ C++ 20, Non dependency, header only compile-time hash calculation library.
 
 - This library supports types that meet one of the following requirements. If you use unsupported types, a compile error will occur.
   1. trivally copyable type and satisfies the following.
-   - is not a union type;
-   - is not a pointer type;
-   - is not a pointer to member type;
-   - is not a volatile-qualified type; and
-   - has no non-static data member of reference type.
+     - is not a union type;
+     - is not a pointer type;
+     - is not a pointer to member type;
+     - is not a volatile-qualified type; and
+     - has no non-static data member of reference type.
   2. input range, pair, tuple, or variant type whose value_type or element_type satisfies the above item or this item.
 
-- The hash value of the type that satisfies the first item above but does not satisfy input_range is the same value as libstdc++.
-
+- The hash value is the same as libstdc++ for the type that satisfies the first item above other than input range, or the input range whose value_type is 1 byte.
 - Supported types use values instead of adresses to calculate hashes.
 
 # Usage
