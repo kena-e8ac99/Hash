@@ -4,7 +4,6 @@
 #include <array>
 #include <bit>
 #include <span>
-#include <tuple>
 #include <type_traits>
 
 #include "hash/hash_concepts.hpp"
@@ -44,29 +43,6 @@ namespace reki
     return seed;
   }
 
-  template <consteval_bit_castable T, consteval_bit_castable U>
-  constexpr std::size_t hash_bytes(const std::pair<T, U>& value,
-                                   std::size_t            seed = 0xc70f6907UL)
-  {
-    return hash_bytes(value.second, hash_bytes(value.first, std::move(seed)));
-  }
-
-  template <consteval_bit_castable... T>
-  constexpr std::size_t hash_bytes(const std::tuple<T...>& value,
-                                   std::size_t             seed = 0xc70f6907UL)
-  {
-    std::apply(
-      [&seed](const T&... value)
-      {
-        ([&seed](const auto& value)
-        {
-          seed = hash_bytes(value, seed);
-        }(value), ...);
-      }, value);
-
-    return seed;
-  }
-
   // FNV hash
   template <consteval_bit_castable T>
   constexpr std::size_t fnv_hash_bytes(const T&    value,
@@ -97,32 +73,6 @@ namespace reki
       {
         seed = fnv_hash_bytes(value, seed);
       });
-
-    return seed;
-  }
-
-  template <consteval_bit_castable T, consteval_bit_castable U>
-  constexpr std::size_t
-    fnv_hash_bytes(const std::pair<T, U>& value,
-                   std::size_t            seed = 2166136261UL)
-  {
-    return fnv_hash_bytes(value.second,
-                         fnv_hash_bytes(value.first, std::move(seed)));
-  }
-
-  template <consteval_bit_castable... T>
-  constexpr std::size_t
-    fnv_hash_bytes(const std::tuple<T...>& value,
-                   std::size_t             seed = 2166136261UL)
-  {
-    std::apply(
-      [&seed](const T&... value)
-      {
-        ([&seed](const auto& value)
-        {
-          seed = fnv_hash_bytes(value, seed);
-        }(value), ...);
-      }, value);
 
     return seed;
   }

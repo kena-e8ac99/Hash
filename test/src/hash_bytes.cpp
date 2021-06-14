@@ -155,18 +155,4 @@ int main()
 
       expect(constant<my_hash_fnv != 0>);
     };
-
-  "tuple"_test =
-    []()
-    {
-      constexpr std::tuple<int, double, std::byte> value{1, 2.0, std::byte{3}};
-
-      constexpr auto my_hash = reki::hash_bytes(value, 1);
-
-      expect(constant<my_hash != 0>);
-
-      constexpr auto my_hash_fnv = reki::fnv_hash_bytes(value, 1);
-
-      expect(constant<my_hash_fnv != 0>);
-    };
 }
