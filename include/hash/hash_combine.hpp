@@ -1,7 +1,8 @@
 #pragma once
 
 #include <cstddef>
-namespace reki::detail
+
+namespace reki
 {
   constexpr void hash_combine(std::size_t& seed, std::size_t value)
   {

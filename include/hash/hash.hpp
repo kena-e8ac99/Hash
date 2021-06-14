@@ -5,7 +5,7 @@
 #include <type_traits>
 #include <variant>
 
-#include "hash/detail/hash_combine.hpp"
+#include "hash/hash_combine.hpp"
 #include "hash/hash_bytes.hpp"
 
 namespace reki
@@ -111,7 +111,7 @@ namespace reki
           std::ranges::begin(value) + 1, std::ranges::end(value),
           [&seed](const auto& value)
           {
-            detail::hash_combine(seed, hash<value_type>{}(value));
+            hash_combine(seed, hash<value_type>{}(value));
           });
 
         return seed;
@@ -133,7 +133,7 @@ namespace reki
     {
       std::size_t seed = hash<T>{}(value.first);
 
-      detail::hash_combine(seed, hash<U>{}(value.second));
+      hash_combine(seed, hash<U>{}(value.second));
 
       return seed;
     }
@@ -153,7 +153,7 @@ namespace reki
 
             ([&seed]<class U>(const U& value)
             {
-              detail::hash_combine(seed, hash<U>{}(value));
+              hash_combine(seed, hash<U>{}(value));
             }(value), ...);
 
             return seed;
