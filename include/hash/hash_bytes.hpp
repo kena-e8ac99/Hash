@@ -30,6 +30,7 @@ namespace reki
   }
 
   template <consteval_bit_castable T, std::size_t N = std::dynamic_extent>
+  requires (!available_as_byte<T>)
   constexpr std::size_t hash_bytes(std::span<const T, N> value,
                                    std::size_t           seed = 0xc70f6907UL)
   {
@@ -85,6 +86,7 @@ namespace reki
   }
 
   template <consteval_bit_castable T, std::size_t N = std::dynamic_extent>
+  requires (!available_as_byte<T>)
   constexpr std::size_t
     fnv_hash_bytes(std::span<const T, N> value,
                    std::size_t           seed = 2166136261UL)
