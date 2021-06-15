@@ -1,6 +1,7 @@
 #pragma once
 
 #include <concepts>
+#include <numeric>
 #include <optional>
 #include <string>
 #include <string_view>
@@ -99,7 +100,7 @@ namespace reki
   {
     constexpr std::size_t operator()(std::basic_string_view<CharT> value)
     {
-      return hash_bytes(std::span{value.cbegin(), value.cend()});
+      return hash<std::basic_string_view<CharT>>{}(std::move(value));
     }
   };
 
@@ -108,7 +109,7 @@ namespace reki
   {
     constexpr std::size_t operator()(std::basic_string_view<CharT> value)
     {
-      return hash<CharT*>{}(std::move(value));
+      return hash<std::basic_string_view<CharT>>{}(std::move(value));
     }
   };
 
@@ -120,23 +121,22 @@ namespace reki
     {
       using value_type = std::ranges::range_value_t<T>;
 
-      if constexpr (std::ranges::input_range<value_type>)
-      {
-        std::size_t seed = hash<value_type>{}(*std::ranges::begin(value));
-
-        std::ranges::for_each(
-          std::ranges::begin(value) + 1, std::ranges::end(value),
-          [&seed](const auto& value)
-          {
-            hash_combine(seed, hash<value_type>{}(value));
-          });
-
-        return seed;
-      }
-      else
+      if constexpr (available_as_byte<value_type>)
       {
         return hash_bytes(std::span{std::ranges::begin(value),
                                     std::ranges::end(value)});
+      }
+      else
+      {
+        return std::accumulate(
+                 std::ranges::begin(value) + 1, std::ranges::end(value),
+                 hash<value_type>{}(*std::ranges::begin(value)),
+                 [](auto acc, const auto& value)
+                 {
+                   hash_combine(acc, hash<value_type>{}(value));
+
+                   return std::move(acc);
+                 });
       }
     }
   };
