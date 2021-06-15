@@ -12,7 +12,7 @@ C++ 20, Non dependency, header only compile-time hash calculation library.
      - is not a volatile-qualified type; and
      - has no non-static data member of reference type.
   2. **char\***, **input range**, **pair**, **tuple**, **optional**, or **variant** type whose value_type or element_type satisfies the above item or this item.
-     - Ex. variant<monostate, pair<int, double>, tuple<array<string_view, 2>, optional<const char32_t*>>>
+     - Ex. std::array<std::tuple<double, std::string_view, const char32_t*>, 1>
 
 
 - The hash value is the same as libstdc++ for the type that satisfies the first item above other than input range, or the input range whose value_type is 1 byte.
