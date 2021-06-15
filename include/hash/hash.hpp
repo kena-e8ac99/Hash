@@ -1,6 +1,7 @@
 #pragma once
 
 #include <concepts>
+#include <optional>
 #include <string>
 #include <string_view>
 #include <type_traits>
@@ -192,6 +193,18 @@ namespace reki
 
             return seed;
           }, value);
+    }
+  };
+
+  template <typename T>
+  requires std::default_initializable<hash<T>>
+  struct hash<std::optional<T>> final
+  {
+    constexpr std::size_t operator()(const std::optional<T>& value) const
+      noexcept(noexcept(hash<std::remove_const_t<T>>{}(*value)))
+    {
+      return value ? hash<std::remove_const_t<T>>{}(*value)
+                   : static_cast<std::size_t>(-3333);
     }
   };
 
