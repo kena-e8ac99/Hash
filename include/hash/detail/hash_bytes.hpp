@@ -136,14 +136,12 @@ namespace reki::detail
   constexpr std::size_t hash_bytes(std::span<const T, N> bytes,
                                    std::size_t           seed)
   {
-    std::ranges::for_each(
-      bytes,
-      [&](auto byte)
-      {
-        seed = (seed * 131) + static_cast<char>(byte);
-      });
-
-    return seed;
+    return std::accumulate(
+             bytes.begin(), bytes.end(), seed,
+             [](auto acc, auto byte)
+             {
+               return (acc * 131) + static_cast<char>(byte);
+             });
   }
 
   // FNV hash
@@ -152,16 +150,14 @@ namespace reki::detail
   constexpr std::size_t fnv_hash_bytes(std::span<const T, N> bytes,
                                        std::size_t           hash)
   {
-    std::ranges::for_each(
-      bytes,
-      [&](auto byte)
-      {
-        hash ^= static_cast<std::size_t>(byte);
+    return std::accumulate(
+             bytes.begin(), bytes.end(), hash,
+             [](auto acc, auto byte)
+             {
+               acc ^= static_cast<std::size_t>(byte);
 
-        hash *= std::size_t{16777619UL};
-      });
-
-    return hash;
+               return acc * std::size_t{16777619UL};
+             });
   }
 
   template <::reki::available_as_byte T, std::size_t N = std::dynamic_extent>
@@ -169,16 +165,14 @@ namespace reki::detail
   constexpr std::size_t fnv_hash_bytes(std::span<const T, N> bytes,
                                        std::size_t           hash)
   {
-    std::ranges::for_each(
-      bytes,
-      [&](auto byte)
-      {
-        hash ^= static_cast<std::size_t>(byte);
+    return std::accumulate(
+             bytes.begin(), bytes.end(), hash,
+             [](auto acc, auto byte)
+             {
+               acc ^= static_cast<std::size_t>(byte);
 
-        hash *= std::size_t{1099511628211ULL};
-      });
-
-    return hash;
+               return acc * std::size_t{1099511628211ULL};
+             });
   }
 
   template <::reki::available_as_byte T, std::size_t N = std::dynamic_extent>
