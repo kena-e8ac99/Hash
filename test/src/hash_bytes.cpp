@@ -127,32 +127,4 @@ int main()
 
       expect(eq(my_hash_fnv, std_hash_fnv));
     };
-
-  "int[3]"_test =
-    []()
-    {
-      constexpr int test[3]{0, 1, 2};
-
-      constexpr auto my_hash = reki::hash_bytes(std::span{test}, 1);
-
-      expect(constant<my_hash != 0>);
-
-      constexpr auto my_hash_fnv = reki::fnv_hash_bytes(std::span{test}, 1);
-
-      expect(constant<my_hash_fnv != 0>);
-    };
-
-  "array<int, 3>"_test =
-    []()
-    {
-      constexpr std::array<int, 3> test{0, 1, 2};
-
-      constexpr auto my_hash = reki::hash_bytes(std::span{test}, 1);
-
-      expect(constant<my_hash != 0>);
-
-      constexpr auto my_hash_fnv = reki::fnv_hash_bytes(std::span{test}, 1);
-
-      expect(constant<my_hash_fnv != 0>);
-    };
 }

@@ -29,23 +29,6 @@ namespace reki
     return detail::hash_bytes(std::move(value), std::move(seed));
   }
 
-  template <consteval_bit_castable T, std::size_t N = std::dynamic_extent>
-  requires (!available_as_byte<T>)
-  constexpr std::size_t hash_bytes(std::span<const T, N> value,
-                                   std::size_t           seed = 0xc70f6907UL)
-  {
-    auto result = hash_bytes(*std::ranges::begin(value), seed);
-
-    std::ranges::for_each(
-      std::ranges::begin(value) + 1, std::ranges::end(value),
-      [&result, seed = std::move(seed)](const auto& value)
-      {
-        hash_combine(result, hash_bytes(value, seed));
-      });
-
-    return seed;
-  }
-
   // FNV hash
   template <consteval_bit_castable T>
   constexpr std::size_t fnv_hash_bytes(const T&    value,
@@ -62,23 +45,5 @@ namespace reki
                    std::size_t           seed = 2166136261UL)
   {
     return detail::fnv_hash_bytes(std::move(value), std::move(seed));
-  }
-
-  template <consteval_bit_castable T, std::size_t N = std::dynamic_extent>
-  requires (!available_as_byte<T>)
-  constexpr std::size_t
-    fnv_hash_bytes(std::span<const T, N> value,
-                   std::size_t           seed = 2166136261UL)
-  {
-    auto result = fnv_hash_bytes(*std::ranges::begin(value), seed);
-
-    std::ranges::for_each(
-      std::ranges::begin(value) + 1, std::ranges::end(value),
-      [&result, seed = std::move(seed)](const auto& value)
-      {
-        hash_combine(result, fnv_hash_bytes(value, seed));
-      });
-
-    return seed;
   }
 }
