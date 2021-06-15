@@ -13,15 +13,13 @@ int main()
     {
       using type = std::variant<int, float>;
 
-      using hash_type = reki::hash<std::variant<int, float>>;
-
       constexpr type value1 = 1;
 
-      constexpr auto result1 = hash_type{}(value1);
+      constexpr auto result1 = reki::hash{}(value1);
 
       constexpr type value2 = 1.0f;
 
-      constexpr auto result2 = hash_type{}(value2);
+      constexpr auto result2 = reki::hash{}(value2);
 
       expect(eq(result1, reki::hash<int>{}(1)));
 
@@ -36,23 +34,21 @@ int main()
       using type = std::variant<std::monostate, int, float, std::array<int, 3>,
                                 std::string_view>;
 
-      using hash_type = reki::hash<type>;
-
       constexpr type value1 = std::monostate{};
 
-      constexpr auto result1 = hash_type{}(value1);
+      constexpr auto result1 = reki::hash{}(value1);
 
       constexpr type value2 = 1.0f;
 
-      constexpr auto result2 = hash_type{}(value2);
+      constexpr auto result2 = reki::hash{}(value2);
 
       constexpr type value3 = std::array<int, 3>{0, 1, 2};
 
-      constexpr auto result3 = hash_type{}(value3);
+      constexpr auto result3 = reki::hash{}(value3);
 
       constexpr type value4 = "Hello World!";
 
-      constexpr auto result4 = hash_type{}(value4);
+      constexpr auto result4 = reki::hash{}(value4);
 
       expect(eq(result1, std::size_t{static_cast<size_t>(-7777)}));
 
