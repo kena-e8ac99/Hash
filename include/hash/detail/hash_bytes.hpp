@@ -144,6 +144,22 @@ namespace reki::detail
              });
   }
 
+  template <::reki::consteval_bit_castable T>
+  constexpr std::size_t hash_bytes(const T&    value,
+                                   std::size_t seed = 0xc70f6907UL)
+  {
+    const auto bytes = std::bit_cast<std::array<std::byte, sizeof(T)>>(value);
+
+    return hash_bytes(std::span{bytes}, std::move(seed));
+  }
+
+  template <::reki::available_as_byte T, std::size_t N = std::dynamic_extent>
+  constexpr std::size_t hash_bytes(std::span<const T, N> value,
+                                   std::size_t           seed = 0xc70f6907UL)
+  {
+    return hash_bytes(std::move(value), std::move(seed));
+  }
+
   // FNV hash
   template <::reki::available_as_byte T, std::size_t N = std::dynamic_extent>
   requires (sizeof(std::size_t) == 4)
@@ -181,5 +197,22 @@ namespace reki::detail
                                        std::size_t           seed)
   {
     return hash_bytes(std::move(bytes), std::move(seed));
+  }
+
+  template <::reki::consteval_bit_castable T>
+  constexpr std::size_t fnv_hash_bytes(const T&    value,
+                                       std::size_t seed = 2166136261UL)
+  {
+    const auto bytes = std::bit_cast<std::array<std::byte, sizeof(T)>>(value);
+
+    return fnv_hash_bytes(std::span{bytes}, std::move(seed));
+  }
+
+  template <::reki::available_as_byte T, std::size_t N = std::dynamic_extent>
+  constexpr std::size_t
+    fnv_hash_bytes(std::span<const T, N> value,
+                   std::size_t           seed = 2166136261UL)
+  {
+    return fnv_hash_bytes(std::move(value), std::move(seed));
   }
 }
