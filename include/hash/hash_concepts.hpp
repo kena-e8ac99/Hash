@@ -12,6 +12,11 @@ namespace reki::detail
   = (sizeof(T) == 1) && std::integral<T>  &&
     std::convertible_to<T, unsigned char> &&
     (std::numeric_limits<T>::max() - std::numeric_limits<T>::min() == 255);
+
+  template <typename T>
+  concept available_as_bytes
+  = (sizeof(std::size_t) % sizeof(T) == 0) &&
+    std::convertible_to<T, std::size_t>;
 }
 
 namespace reki
@@ -20,6 +25,11 @@ namespace reki
   concept available_as_byte
   = detail::available_as_byte<T> ||
     detail::available_as_byte<std::underlying_type_t<T>>;
+
+  template <typename T>
+  concept available_as_bytes
+  = detail::available_as_bytes<T> ||
+    detail::available_as_bytes<std::underlying_type_t<T>>;
 
   // NOTE:
   // Although not written in the code, this concept requires
