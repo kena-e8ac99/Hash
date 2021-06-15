@@ -1,18 +1,10 @@
 #pragma once
 
 #include <concepts>
-#include <cstddef>
-#include <limits>
 #include <type_traits>
 
 namespace reki::detail
 {
-  template <typename T>
-  concept available_as_byte
-  = (sizeof(T) == 1) && std::integral<T>  &&
-    std::convertible_to<T, unsigned char> &&
-    (std::numeric_limits<T>::max() - std::numeric_limits<T>::min() == 255);
-
   template <typename T>
   concept available_as_bytes
   = (sizeof(T) <= sizeof(std::size_t)) &&
@@ -22,11 +14,6 @@ namespace reki::detail
 
 namespace reki
 {
-  template <typename T>
-  concept available_as_byte
-  = detail::available_as_byte<T> ||
-    detail::available_as_byte<std::underlying_type_t<T>>;
-
   template <typename T>
   concept available_as_bytes
   = detail::available_as_bytes<T> ||
