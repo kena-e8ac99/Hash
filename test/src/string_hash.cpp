@@ -55,6 +55,8 @@ int main()
       constexpr auto view_result = reki::hash{}(view_text);
 
       expect(eq(char_result, view_result));
+
+      expect(eq(view_result, std::hash<std::u16string_view>{}(view_text)));
     };
 
   "const char32_t* == u32string_view"_test =
@@ -69,6 +71,8 @@ int main()
       constexpr auto view_result = reki::hash{}(view_text);
 
       expect(eq(char_result, view_result));
+
+      expect(eq(view_result, std::hash<std::u32string_view>{}(view_text)));
     };
 
   "const wchar_t* == wstring_view"_test =
@@ -83,5 +87,7 @@ int main()
       constexpr auto view_result = reki::hash{}(view_text);
 
       expect(eq(char_result, view_result));
+
+      expect(eq(view_result, std::hash<std::wstring_view>{}(view_text)));
     };
 }

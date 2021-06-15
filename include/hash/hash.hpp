@@ -121,10 +121,10 @@ namespace reki
     {
       using value_type = std::ranges::range_value_t<T>;
 
-      if constexpr (available_as_byte<value_type>)
+      if constexpr (available_as_bytes<value_type>)
       {
         return detail::hash_bytes(std::span{std::ranges::begin(value),
-                                    std::ranges::end(value)});
+                                  std::ranges::end(value)});
       }
       else
       {
