@@ -2,107 +2,114 @@
 
 #include <cstdint>
 #include <functional>
+#include <limits>
+#include <type_traits>
 
 #include <boost/ut.hpp>
-#include <limits>
 
-template <typename T, T N>
+using namespace boost::ut;
+
+template <typename T>
+requires std::is_arithmetic_v<T>
 constexpr void check()
 {
-  using namespace boost::ut;
+  constexpr auto min = std::numeric_limits<T>::lowest();
 
-  constexpr auto result = reki::hash{}(N);
+  constexpr auto max = std::numeric_limits<T>::max();
 
-  expect(eq(result, std::hash<T>{}(N)));
+  constexpr auto half = max / 2;
+
+  constexpr auto min_result = reki::hash{}(min);
+
+  constexpr auto max_result = reki::hash{}(max);
+
+  constexpr auto half_result = reki::hash{}(half);
+
+  expect(eq(min_result, std::hash<T>{}(min)));
+
+  expect(eq(max_result, std::hash<T>{}(max)));
+
+  expect(eq(half_result, std::hash<T>{}(half)));
+}
+
+template <typename T>
+requires std::is_enum_v<T>
+constexpr void check()
+{
+  using type = std::underlying_type_t<T>;
+
+  constexpr auto min = std::numeric_limits<type>::lowest();
+
+  constexpr auto max = std::numeric_limits<type>::max();
+
+  constexpr auto half = max / 2;
+
+  constexpr auto min_result = reki::hash{}(T{min});
+
+  constexpr auto max_result = reki::hash{}(T{max});
+
+  constexpr auto half_result = reki::hash{}(T{half});
+
+  expect(eq(min_result, std::hash<T>{}(T{min})));
+
+  expect(eq(max_result, std::hash<T>{}(T{max})));
+
+  expect(eq(half_result, std::hash<T>{}(T{half})));
+}
+
+template <std::same_as<std::nullptr_t> T>
+constexpr void check()
+{
+  constexpr auto result = reki::hash{}(T{});
+
+  expect(eq(result, std::hash<T>{}(T{})));
 }
 
 int main()
 {
-  using namespace boost::ut;
+  "bool"_test = [](){ check<bool>(); };
 
-  "bool"_test =
-    []()
-    {
-      check<bool, true>();
-    };
+  "char"_test = [](){ check<char>(); };
 
-  "int"_test =
-    []()
-    {
-      check<int, std::numeric_limits<int>::lowest()>();
+  "signed char"_test = [](){ check<signed char>(); };
 
-      check<int, 42>();
+  "unsigned char"_test = [](){ check<unsigned char>(); };
 
-      check<int, std::numeric_limits<int>::max()>();
-    };
+  "char8_t"_test = [](){ check<char8_t>(); };
 
-  "uint8_t"_test =
-    []()
-    {
-      check<std::uint8_t, std::numeric_limits<std::uint8_t>::lowest()>();
+  "char16_t"_test = [](){ check<char16_t>(); };
 
-      check<std::uint8_t, 42>();
+  "char32_t"_test = [](){ check<char32_t>(); };
 
-      check<std::uint8_t, std::numeric_limits<std::uint8_t>::max()>();
-    };
+  "wchar_t"_test = [](){ check<wchar_t>(); };
 
-  "byte"_test =
-    []()
-    {
-      check<std::byte, std::byte{42}>();
-    };
+  "short"_test = [](){ check<short>(); };
 
-  "size_t"_test =
-    []()
-    {
-      check<std::size_t, std::numeric_limits<std::size_t>::lowest()>();
+  "unsigned short"_test = [](){ check<unsigned short>(); };
 
-      check<std::size_t, 42>();
+  "int"_test = [](){ check<int>(); };
 
-      check<std::size_t, std::numeric_limits<std::size_t>::max()>();
-    };
+  "unsigned int"_test = [](){ check<unsigned int>(); };
 
-  "float"_test =
-    []()
-    {
-      constexpr auto result1
-      = reki::hash<float>{}(std::numeric_limits<float>::lowest());
+  "long"_test = [](){ check<long>(); };
 
-      constexpr auto result2 = reki::hash<float>{}(42.0f);
+  "long long"_test = [](){ check<long long>(); };
 
-      constexpr auto result3
-      = reki::hash<float>{}(std::numeric_limits<float>::max());
+  "unsigned long"_test = [](){ check<unsigned long>(); };
 
-      expect(neq(result1, std::size_t{0}));
+  "unsigned long long"_test = [](){ check<unsigned long long>(); };
 
-      expect(neq(result1, std::numeric_limits<float>::lowest()));
+  "float"_test = [](){ check<float>(); };
 
-      expect(eq(result2, std::hash<float>{}(42.0f)));
+  "double"_test = [](){ check<double>(); };
 
-      expect(neq(result3, std::size_t{0}));
+  //"long double"_test = [](){ check<long double>(); };
 
-      expect(neq(result3, std::numeric_limits<float>::max()));
-    };
+  "nullptr_t"_test = [](){ check<std::nullptr_t>(); };
 
-  "double"_test =
-    []()
-    {
-      constexpr auto result1
-      = reki::hash<double>{}(std::numeric_limits<double>::lowest());
+  "byte"_test = [](){ check<std::byte>(); };
 
-      constexpr auto result2 = reki::hash<double>{}(42.0);
+  enum class my_enum {};
 
-      constexpr auto result3
-      = reki::hash<double>{}(std::numeric_limits<double>::max());
-
-      expect(neq(result1, std::size_t{0}));
-
-      expect(neq(result1, std::numeric_limits<double>::lowest()));
-
-      expect(eq(result2, std::hash<double>{}(42.0)));
-
-      expect(neq(result3, std::size_t{0}));
-
-      expect(neq(result3, std::numeric_limits<double>::max()));
-    };
+  "user defined enum"_test = [](){ check<my_enum>(); };
 }

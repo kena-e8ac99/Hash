@@ -8,19 +8,23 @@ int main()
 {
   using namespace boost::ut;
 
-  "optional int"_test =
+  "nullopt"_test =
     []()
     {
-      constexpr std::optional<int> value1{};
+      constexpr std::optional<int> value{};
 
-      constexpr std::optional<int> value2{42};
+      constexpr auto result = reki::hash{}(value);
 
-      constexpr auto result1 = reki::hash{}(value1);
+      expect(eq(result, std::hash<std::optional<int>>{}(value)));
+    };
 
-      constexpr auto result2 = reki::hash{}(value2);
+  "float"_test =
+    []()
+    {
+      constexpr std::optional<float> value{1.0f};
 
-      expect(eq(result1, static_cast<std::size_t>(-3333)));
+      constexpr auto result = reki::hash{}(value);
 
-      expect(neq(result1, result2));
+      expect(eq(result, std::hash<std::optional<float>>{}(value)));
     };
 }

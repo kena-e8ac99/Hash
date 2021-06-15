@@ -5,89 +5,62 @@
 
 #include <boost/ut.hpp>
 
+using namespace std::literals;
+
+template <typename CharT = char>
+constexpr const CharT* value = "Hello World!";
+
+template <>
+constexpr const char8_t* value<char8_t> = u8"Hello World!";
+
+template <>
+constexpr const char16_t* value<char16_t> = u"Hello World!";
+
+template <>
+constexpr const char32_t* value<char32_t> = U"Hello World!";
+
+template <>
+constexpr const wchar_t* value<wchar_t> = L"Hello World!";
+
+template <typename CharT>
+constexpr void check()
+{
+  using namespace boost::ut;
+
+  using string_t = std::basic_string<CharT>;
+
+  using view_t   = std::basic_string_view<CharT>;
+
+  string_t string{value<CharT>};
+
+  constexpr view_t   view{value<CharT>};
+
+  constexpr auto chars_result  = reki::hash{}(value<CharT>);
+
+            auto string_result = reki::hash{}(string);
+
+  constexpr auto view_result   = reki::hash{}(view);
+
+  expect(eq(chars_result, string_result));
+
+  expect(eq(string_result, view_result));
+
+  expect(eq(string_result, std::hash<string_t>{}(string)));
+}
+
 int main()
 {
   using namespace boost::ut;
 
   using namespace std::literals;
 
-  "string"_test =
-    []()
-    {
-      constexpr auto char_text   = "Hello World!";
+  "char*"_test = [](){ check<char>(); };
 
-      constexpr auto view_text   = "Hello World!"sv;
+  "char8_t*"_test = [](){ check<char8_t>(); };
 
-      constexpr auto char_result = reki::hash{}(char_text);
+  "char16_t*"_test = [](){ check<char16_t>(); };
 
-      constexpr auto view_result = reki::hash{}(view_text);
+  "char32_t*"_test = [](){ check<char32_t>(); };
 
-      expect(eq(char_result, view_result));
-
-      expect(eq(view_result, std::hash<std::string_view>{}(view_text)));
-    };
-
-  "const char8_t* == u8string_view"_test =
-    []()
-    {
-      constexpr auto char_text   = u8"Hello World!";
-
-      constexpr auto view_text   = u8"Hello World!"sv;
-
-      constexpr auto char_result = reki::hash{}(char_text);
-
-      constexpr auto view_result = reki::hash{}(view_text);
-
-      expect(eq(char_result, view_result));
-
-      expect(eq(view_result, std::hash<std::u8string_view>{}(view_text)));
-    };
-
-  "const char16_t* == u16string_view"_test =
-    []()
-    {
-      constexpr auto char_text   = u"Hello World!";
-
-      constexpr auto view_text   = u"Hello World!"sv;
-
-      constexpr auto char_result = reki::hash{}(char_text);
-
-      constexpr auto view_result = reki::hash{}(view_text);
-
-      expect(eq(char_result, view_result));
-
-      expect(eq(view_result, std::hash<std::u16string_view>{}(view_text)));
-    };
-
-  "const char32_t* == u32string_view"_test =
-    []()
-    {
-      constexpr auto char_text   = U"Hello World!";
-
-      constexpr auto view_text   = U"Hello World!"sv;
-
-      constexpr auto char_result = reki::hash{}(char_text);
-
-      constexpr auto view_result = reki::hash{}(view_text);
-
-      expect(eq(char_result, view_result));
-
-      expect(eq(view_result, std::hash<std::u32string_view>{}(view_text)));
-    };
-
-  "const wchar_t* == wstring_view"_test =
-    []()
-    {
-      constexpr auto char_text   = L"Hello World!";
-
-      constexpr auto view_text   = L"Hello World!"sv;
-
-      constexpr auto char_result = reki::hash{}(char_text);
-
-      constexpr auto view_result = reki::hash{}(view_text);
-
-      expect(eq(char_result, view_result));
-
-      expect(eq(view_result, std::hash<std::wstring_view>{}(view_text)));
-    };
+  "wchar_t*"_test = [](){ check<wchar_t>(); };
 }
