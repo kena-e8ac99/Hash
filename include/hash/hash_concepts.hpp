@@ -15,7 +15,8 @@ namespace reki::detail
 
   template <typename T>
   concept available_as_bytes
-  = (sizeof(std::size_t) % sizeof(T) == 0) &&
+  = (sizeof(T) <= sizeof(std::size_t)) &&
+    (sizeof(std::size_t) % sizeof(T) == 0) &&
     std::convertible_to<T, std::size_t>;
 }
 
