@@ -30,4 +30,11 @@ namespace reki
   = std::is_trivially_copyable_v<T> &&
     (!std::is_union_v<T> && !std::is_pointer_v<T> &&
      !std::is_member_pointer_v<T> && !std::is_volatile_v<T>);
+
+  template <typename T>
+  concept character
+  = std::same_as<T, char>     || std::same_as<T, char8_t>     ||
+    std::same_as<T, char16_t> || std::same_as<T, char32_t>    ||
+    std::same_as<T, wchar_t>  || std::same_as<T, signed char> ||
+    std::same_as<T, unsigned char>;
 }
