@@ -171,7 +171,7 @@ namespace reki
     {
       return
         std::apply(
-          [](const T&... value) mutable
+          [](const T&... value)
           {
             std::size_t seed = 0;
 
