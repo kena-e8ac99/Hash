@@ -24,7 +24,7 @@ namespace reki
     template <typename T>
     requires std::default_initializable<hash<T>>
     constexpr std::size_t
-      operator()(const T& value) const noexcept(noexcept(hash<T>{}(T{})))
+      operator()(const T& value) const noexcept(noexcept(hash<T>{}(value)))
     {
       return hash<T>{}(value);
     }
