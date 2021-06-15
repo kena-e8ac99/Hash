@@ -11,7 +11,7 @@ constexpr void check()
 {
   using namespace boost::ut;
 
-  constexpr auto result = reki::hash<T>{}(N);
+  constexpr auto result = reki::hash{}(N);
 
   expect(eq(result, std::hash<T>{}(N)));
 }

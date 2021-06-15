@@ -19,9 +19,9 @@ int main()
 
       constexpr type value2{1, 1.0f};
 
-      constexpr auto result1 = reki::hash<type>{}(value1);
+      constexpr auto result1 = reki::hash{}(value1);
 
-      constexpr auto result2 = reki::hash<type>{}(value2);
+      constexpr auto result2 = reki::hash{}(value2);
 
       expect(neq(result1, std::size_t{0}));
 
@@ -37,9 +37,9 @@ int main()
 
       constexpr type value2{1, 1.0, "Hello World!"};
 
-      constexpr auto result1 = reki::hash<type>{}(value1);
+      constexpr auto result1 = reki::hash{}(value1);
 
-      constexpr auto result2 = reki::hash<type>{}(value2);
+      constexpr auto result2 = reki::hash{}(value2);
 
       expect(neq(result1, std::size_t{0}));
 
