@@ -4,6 +4,7 @@
 #include <bit>
 #include <concepts>
 #include <cstddef>
+#include <numeric>
 #include <span>
 #include <type_traits>
 
@@ -15,32 +16,24 @@ namespace reki::detail
   requires (std::endian::native == std::endian::big)
   constexpr std::size_t from_bytes(std::span<const T, N> bytes)
   {
-    std::size_t result{};
-
-    std::ranges::for_each(
-      bytes,
-      [&](auto byte)
-      {
-        result = (result << 8) + static_cast<unsigned char>(byte);
-      });
-
-    return result;
+    return std::accumulate(
+             bytes.begin(), bytes.end(), std::size_t{},
+             [](auto acc, auto byte)
+             {
+               return (acc << 8) + static_cast<unsigned char>(byte);
+             });
   }
 
   template <::reki::available_as_byte T, std::size_t N = std::dynamic_extent>
   requires (std::endian::native == std::endian::little)
   constexpr std::size_t from_bytes(std::span<const T, N> bytes)
   {
-    std::size_t result{};
-
-    std::ranges::for_each(
-      bytes.rbegin(), bytes.rend(),
-      [&](auto byte)
-      {
-        result = (result << 8) + static_cast<unsigned char>(byte);
-      });
-
-    return result;
+    return std::accumulate(
+             bytes.rbegin(), bytes.rend(), std::size_t{},
+             [](auto acc, auto byte)
+             {
+               return (acc << 8) + static_cast<unsigned char>(byte);
+             });
   }
 
   constexpr std::size_t shift_mix(std::size_t v) noexcept
