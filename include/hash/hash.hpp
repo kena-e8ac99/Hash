@@ -8,6 +8,7 @@
 #include <variant>
 
 #include "hash/hash_combine.hpp"
+#include "hash/hash_concepts.hpp"
 #include "hash/hash_bytes.hpp"
 
 namespace reki
@@ -29,10 +30,7 @@ namespace reki
       return hash<T>{}(value);
     }
 
-    template <typename CharT>
-    requires std::same_as<CharT, char>     || std::same_as<CharT, char8_t>  ||
-             std::same_as<CharT, char16_t> || std::same_as<CharT, char32_t> ||
-             std::same_as<CharT, wchar_t>
+    template <character CharT>
     constexpr std::size_t operator()(const CharT* value) const
     {
       return hash<const CharT*>{}(value);
@@ -96,10 +94,7 @@ namespace reki
     }
   };
 
-  template <typename CharT>
-  requires std::same_as<CharT, char>     || std::same_as<CharT, char8_t>  ||
-           std::same_as<CharT, char16_t> || std::same_as<CharT, char32_t> ||
-           std::same_as<CharT, wchar_t>
+  template <character CharT>
   struct hash<CharT*> final
   {
     constexpr std::size_t operator()(std::basic_string_view<CharT> value)
@@ -108,10 +103,7 @@ namespace reki
     }
   };
 
-  template <typename CharT>
-  requires std::same_as<CharT, char>     || std::same_as<CharT, char8_t>  ||
-           std::same_as<CharT, char16_t> || std::same_as<CharT, char32_t> ||
-           std::same_as<CharT, wchar_t>
+  template <character CharT>
   struct hash<const CharT*> final
   {
     constexpr std::size_t operator()(std::basic_string_view<CharT> value)
@@ -172,7 +164,7 @@ namespace reki
     {
       return
         std::apply(
-          [](const T&... value) mutable
+          [](const T&... value)
           {
             std::size_t seed = 0;
 
