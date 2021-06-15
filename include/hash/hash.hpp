@@ -24,7 +24,7 @@ namespace reki
     template <typename T>
     requires std::default_initializable<hash<T>>
     constexpr std::size_t
-      operator()(const T& value) const noexcept(noexcept(hash<T>{}(T{})))
+      operator()(const T& value) const noexcept(noexcept(hash<T>{}(value)))
     {
       return hash<T>{}(value);
     }
@@ -36,16 +36,6 @@ namespace reki
     constexpr std::size_t operator()(const CharT* value) const
     {
       return hash<const CharT*>{}(value);
-    }
-
-    template <typename CharT, class Traits = std::char_traits<CharT>>
-    requires std::same_as<CharT, char>     || std::same_as<CharT, char8_t>  ||
-             std::same_as<CharT, char16_t> || std::same_as<CharT, char32_t> ||
-             std::same_as<CharT, wchar_t>
-    constexpr std::size_t
-      operator()(std::basic_string_view<CharT, Traits> value) const
-    {
-      return hash<std::basic_string_view<CharT, Traits>>{}(value);
     }
 
     struct is_transparent final {};
