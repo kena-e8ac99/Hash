@@ -27,9 +27,9 @@ constexpr auto view_text   = "Hello World!"sv;
 
 constexpr auto char_text   = "Hello World!";
 
-constexpr auto view_result = reki::hash<std::string_view>{}(view_text);
+constexpr auto view_result = reki::hash{}(view_text);
 
-constexpr auto char_result = reki::hash<const char*>{}(char_text);
+constexpr auto char_result = reki::hash{}(char_text);
 
 static_assert(view_result == char_result);
 
