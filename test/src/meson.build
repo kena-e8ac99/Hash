@@ -28,3 +28,7 @@ test('test_variant_hash',
      executable('test_variant_hash', 'variant_hash.cpp',
                 dependencies: test_dep))
 
+test('test_optional_hash',
+     executable('test_optional_hash', 'optional_hash.cpp',
+                dependencies: test_dep))
+
