@@ -10,17 +10,17 @@
 #include <type_traits>
 #include <utility>
 
-#include "hash/hash_concepts.hpp"
+#include "hash/detail/hash_concepts.hpp"
 
 namespace reki::detail
 {
-  template <::reki::available_as_bytes T>
+  template <available_as_bytes T>
   using destination_t
   = std::conditional_t<sizeof(T) == 1, std::uint8_t,
       std::conditional_t<sizeof(T) == 2, std::uint16_t,
         std::conditional_t<sizeof(T) == 4, std::uint32_t,std::uint64_t>>>;
 
-  template <::reki::available_as_bytes T, std::size_t N = std::dynamic_extent>
+  template <available_as_bytes T, std::size_t N = std::dynamic_extent>
   requires (std::endian::native == std::endian::big)
   constexpr std::size_t from_bytes(std::span<const T, N> bytes)
   {
@@ -33,7 +33,7 @@ namespace reki::detail
              });
   }
 
-  template <::reki::available_as_bytes T, std::size_t N = std::dynamic_extent>
+  template <available_as_bytes T, std::size_t N = std::dynamic_extent>
   requires (std::endian::native == std::endian::little)
   constexpr std::size_t from_bytes(std::span<const T, N> bytes)
   {
@@ -52,7 +52,7 @@ namespace reki::detail
   }
 
   // Murmur hash
-  template <::reki::available_as_bytes T, std::size_t N = std::dynamic_extent>
+  template <available_as_bytes T, std::size_t N = std::dynamic_extent>
   requires (sizeof(std::size_t) == 4)
   constexpr std::size_t hash_bytes(std::span<const T, N> bytes,
                                    std::size_t           seed)
@@ -98,7 +98,7 @@ namespace reki::detail
     return hash;
   }
 
-  template <::reki::available_as_bytes T, std::size_t N = std::dynamic_extent>
+  template <available_as_bytes T, std::size_t N = std::dynamic_extent>
   requires (sizeof(std::size_t) == 8)
   constexpr std::size_t hash_bytes(std::span<const T, N> bytes,
                                    std::size_t           seed)
@@ -140,15 +140,15 @@ namespace reki::detail
     return hash;
   }
 
-  template <::reki::available_as_bytes T, std::size_t N = std::dynamic_extent>
+  template <available_as_bytes T, std::size_t N = std::dynamic_extent>
   requires (sizeof(std::size_t) != 4 && sizeof(std::size_t) != 8)
   constexpr std::size_t hash_bytes(std::span<const T, N> bytes,
                                    std::size_t           seed)
   {
     constexpr auto impl =
-      []()
+      []<std::size_t... I>(std::index_sequence<I...>)
       {
-        return []<std::size_t... I>(std::size_t acc, std::index_sequence<I...>)
+        return [](std::size_t acc) noexcept
         {
           return (acc * ... * (static_cast<void>(I), 131));
         };
@@ -162,7 +162,7 @@ namespace reki::detail
              });
   }
 
-  template <::reki::consteval_bit_castable T>
+  template <consteval_bit_castable T>
   constexpr std::size_t hash_bytes(const T&    value,
                                    std::size_t seed = 0xc70f6907UL)
   {
@@ -171,66 +171,11 @@ namespace reki::detail
     return hash_bytes(std::span{bytes}, std::move(seed));
   }
 
-  template <::reki::available_as_bytes T, std::size_t N = std::dynamic_extent>
+  template <available_as_bytes T, std::size_t N = std::dynamic_extent>
   constexpr std::size_t hash_bytes(std::span<const T, N> value,
                                    std::size_t           seed = 0xc70f6907UL)
   {
     return hash_bytes(std::move(value), std::move(seed));
   }
 
-  // FNV hash
-  template <::reki::available_as_byte T, std::size_t N = std::dynamic_extent>
-  requires (sizeof(std::size_t) == 4)
-  constexpr std::size_t fnv_hash_bytes(std::span<const T, N> bytes,
-                                       std::size_t           hash)
-  {
-    return std::accumulate(
-             bytes.begin(), bytes.end(), hash,
-             [](auto acc, auto byte)
-             {
-               acc ^= static_cast<std::size_t>(byte);
-
-               return acc * std::size_t{16777619UL};
-             });
-  }
-
-  template <::reki::available_as_byte T, std::size_t N = std::dynamic_extent>
-  requires (sizeof(std::size_t) == 8)
-  constexpr std::size_t fnv_hash_bytes(std::span<const T, N> bytes,
-                                       std::size_t           hash)
-  {
-    return std::accumulate(
-             bytes.begin(), bytes.end(), hash,
-             [](auto acc, auto byte)
-             {
-               acc ^= static_cast<std::size_t>(byte);
-
-               return acc * std::size_t{1099511628211ULL};
-             });
-  }
-
-  template <::reki::available_as_byte T, std::size_t N = std::dynamic_extent>
-  requires (sizeof(std::size_t) != 4 && sizeof(std::size_t) != 8)
-  constexpr std::size_t fnv_hash_bytes(std::span<const T, N> bytes,
-                                       std::size_t           seed)
-  {
-    return hash_bytes(std::move(bytes), std::move(seed));
-  }
-
-  template <::reki::consteval_bit_castable T>
-  constexpr std::size_t fnv_hash_bytes(const T&    value,
-                                       std::size_t seed = 2166136261UL)
-  {
-    const auto bytes = std::bit_cast<std::array<std::byte, sizeof(T)>>(value);
-
-    return fnv_hash_bytes(std::span{bytes}, std::move(seed));
-  }
-
-  template <::reki::available_as_byte T, std::size_t N = std::dynamic_extent>
-  constexpr std::size_t
-    fnv_hash_bytes(std::span<const T, N> value,
-                   std::size_t           seed = 2166136261UL)
-  {
-    return fnv_hash_bytes(std::move(value), std::move(seed));
-  }
 }

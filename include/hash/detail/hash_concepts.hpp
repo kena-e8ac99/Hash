@@ -1,35 +1,23 @@
 #pragma once
 
 #include <concepts>
-#include <cstddef>
-#include <limits>
 #include <type_traits>
+
+// Forward declaration
+namespace reki
+{
+  template <typename>
+  struct hash;
+}
 
 namespace reki::detail
 {
   template <typename T>
-  concept available_as_byte
-  = (sizeof(T) == 1) && std::integral<T>  &&
-    std::convertible_to<T, unsigned char> &&
-    (std::numeric_limits<T>::max() - std::numeric_limits<T>::min() == 255);
-
-  template <typename T>
   concept available_as_bytes
-  = (sizeof(std::size_t) % sizeof(T) == 0) &&
-    std::convertible_to<T, std::size_t>;
-}
-
-namespace reki
-{
-  template <typename T>
-  concept available_as_byte
-  = detail::available_as_byte<T> ||
-    detail::available_as_byte<std::underlying_type_t<T>>;
-
-  template <typename T>
-  concept available_as_bytes
-  = detail::available_as_bytes<T> ||
-    detail::available_as_bytes<std::underlying_type_t<T>>;
+  = (sizeof(T) <= sizeof(std::size_t))     &&
+    (sizeof(std::size_t) % sizeof(T) == 0) &&
+    (std::convertible_to<T, std::size_t>   ||
+     std::convertible_to<std::underlying_type_t<T>, std::size_t>);
 
   // NOTE:
   // Although not written in the code, this concept requires
@@ -47,4 +35,7 @@ namespace reki
     std::same_as<T, char16_t> || std::same_as<T, char32_t>    ||
     std::same_as<T, wchar_t>  || std::same_as<T, signed char> ||
     std::same_as<T, unsigned char>;
+
+  template <typename T>
+  concept convertible_to_hash = std::default_initializable<hash<T>>;
 }

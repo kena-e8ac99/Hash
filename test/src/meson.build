@@ -1,9 +1,5 @@
 test_dep = [hash_dep, ut_dep]
 
-test('test_hash_concepts',
-     executable('test_hash_concepts', 'hash_concepts.cpp',
-                dependencies: test_dep))
-
 test('test_arithmetic_hash',
      executable('test_arithmetic_hash', 'arithmetic_hash.cpp',
                 dependencies: test_dep))
