@@ -2,7 +2,7 @@
 
 #include <cstddef>
 
-namespace reki
+namespace reki::detail
 {
   constexpr void hash_combine(std::size_t& seed, std::size_t value) noexcept
   {

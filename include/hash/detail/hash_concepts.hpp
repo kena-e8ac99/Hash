@@ -3,7 +3,7 @@
 #include <concepts>
 #include <type_traits>
 
-namespace reki
+namespace reki::detail
 {
   template <typename T>
   concept available_as_bytes
