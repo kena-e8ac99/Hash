@@ -2,7 +2,9 @@
 
 C++ 20, Non dependency, header only compile-time hash calculation library.
 
-This library is intended to make the libstdc ++ implementation compile-time. I try to use the same calculation method as much as possible. If libstdc ++ supports compile-time processing, this library will be closed.
+This library is intended to make the libstdc ++ implementation compile-time. If STL supports compile-time processing, this library will be closed.
+
+All hash values calculated by this library are the same as libstdc ++ except char*.
 
 # Note
 
@@ -16,7 +18,6 @@ This library is intended to make the libstdc ++ implementation compile-time. I t
   2. **char\***, **input range**, **pair**, **tuple**, **optional**, or **variant** type whose value_type or element_type satisfies the above item or this item.
      - Ex. std::array<std::tuple<double, std::string_view, const char32_t*>, 1>
 
-- The hash value is the same as libstdc++ for the type that satisfies the first item above other than input range, or the input range whose value_type is 1 byte.
 - Supported types use values instead of adresses to calculate hashes.
 
 # Usage
@@ -26,17 +27,17 @@ This library is intended to make the libstdc ++ implementation compile-time. I t
 
 using namespace std::literals;
 
-constexpr auto view_text   = "Hello World!"sv;
+constexpr auto view         = "Hello World!"sv;
 
-constexpr auto char_text   = "Hello World!";
+constexpr auto chars        = "Hello World!";
 
-constexpr auto view_result = reki::hash{}(view_text);
+constexpr auto view_result  = reki::hash{}(view);
 
-constexpr auto char_result = reki::hash{}(char_text);
+constexpr auto chars_result = reki::hash{}(chars);
 
-static_assert(view_result == char_result);
+static_assert(view_result == chars_result);
 
-assert(view_result == std::hash<std::string_view>{}(view_text));
+assert(view_result == std::hash<std::string_view>{}(view));
 ```
 
 # Tested Compiler
