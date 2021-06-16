@@ -37,8 +37,7 @@ namespace reki
   template <>
   struct hash<void> final
   {
-    template <typename T>
-    requires std::default_initializable<hash<T>>
+    template <detail::convertible_to_hash T>
     constexpr std::size_t
       operator()(const T& value) const noexcept(noexcept(hash<T>{}(value)))
     {
@@ -128,7 +127,7 @@ namespace reki
   };
 
   template <std::ranges::input_range T>
-  requires std::default_initializable<hash<std::ranges::range_value_t<T>>>
+  requires detail::convertible_to_hash<std::ranges::range_value_t<T>>
   struct hash<T> final
   {
     constexpr std::size_t operator()(const T& value) const
@@ -155,9 +154,7 @@ namespace reki
     }
   };
 
-  template <typename T, typename U>
-  requires std::default_initializable<hash<T>> &&
-           std::default_initializable<hash<U>>
+  template <detail::convertible_to_hash T, detail::convertible_to_hash U>
   struct hash<std::pair<T, U>> final
   {
     constexpr std::size_t operator()(const std::pair<T, U>& value) const
@@ -170,8 +167,7 @@ namespace reki
     }
   };
 
-  template <typename... T>
-  requires (std::default_initializable<hash<T>> && ...)
+  template <detail::convertible_to_hash... T>
   struct hash<std::tuple<T...>> final
   {
     constexpr std::size_t operator()(const std::tuple<T...>& value) const
@@ -192,8 +188,7 @@ namespace reki
     }
   };
 
-  template <typename T>
-  requires std::default_initializable<hash<T>>
+  template <detail::convertible_to_hash T>
   struct hash<std::optional<T>> final
   {
     constexpr std::size_t operator()(const std::optional<T>& value) const
@@ -213,8 +208,7 @@ namespace reki
     }
   };
 
-  template <typename... T>
-  requires (std::default_initializable<hash<T>> && ...)
+  template <detail::convertible_to_hash... T>
   struct hash<std::variant<T...>> final
   {
     constexpr std::size_t operator()(const std::variant<T...>& value) const

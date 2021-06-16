@@ -3,6 +3,13 @@
 #include <concepts>
 #include <type_traits>
 
+// Forward declaration
+namespace reki
+{
+  template <typename>
+  struct hash;
+}
+
 namespace reki::detail
 {
   template <typename T>
@@ -28,4 +35,7 @@ namespace reki::detail
     std::same_as<T, char16_t> || std::same_as<T, char32_t>    ||
     std::same_as<T, wchar_t>  || std::same_as<T, signed char> ||
     std::same_as<T, unsigned char>;
+
+  template <typename T>
+  concept convertible_to_hash = std::default_initializable<hash<T>>;
 }
