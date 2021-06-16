@@ -3,21 +3,14 @@
 #include <concepts>
 #include <type_traits>
 
-namespace reki::detail
-{
-  template <typename T>
-  concept available_as_bytes
-  = (sizeof(T) <= sizeof(std::size_t)) &&
-    (sizeof(std::size_t) % sizeof(T) == 0) &&
-    std::convertible_to<T, std::size_t>;
-}
-
 namespace reki
 {
   template <typename T>
   concept available_as_bytes
-  = detail::available_as_bytes<T> ||
-    detail::available_as_bytes<std::underlying_type_t<T>>;
+  = (sizeof(T) <= sizeof(std::size_t))     &&
+    (sizeof(std::size_t) % sizeof(T) == 0) &&
+    (std::convertible_to<T, std::size_t>   ||
+     std::convertible_to<std::underlying_type_t<T>, std::size_t>);
 
   // NOTE:
   // Although not written in the code, this concept requires
