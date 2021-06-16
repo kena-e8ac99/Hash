@@ -24,6 +24,9 @@ namespace std
 
   template <class Visitor, class... Variants>
   constexpr decltype(auto) visit(Visitor&&, Variants&&...);
+
+  template <class R, class Visitor, class... Variants>
+  constexpr R visit(Visitor&&, Variants&&...);
 }
 
 namespace reki
@@ -214,7 +217,7 @@ namespace reki
     constexpr std::size_t operator()(const std::variant<T...>& value) const
     {
       return
-        std::visit(
+        std::visit<std::size_t>(
           [seed = value.index()]<class U>(const U& value)
           {
             return seed + hash<U>{}(value);
