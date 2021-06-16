@@ -1,26 +1,26 @@
 test_dep = [hash_dep, ut_dep]
 
-test('test_arithmetic_hash',
-     executable('test_arithmetic_hash', 'arithmetic_hash.cpp',
+test('test_basic_types',
+     executable('test_basic_types', 'basic_types.cpp',
                 dependencies: test_dep))
 
-test('test_string_hash',
-     executable('test_string_hash', 'string_hash.cpp',
+test('test_string',
+     executable('test_string', 'string.cpp',
                 dependencies: test_dep))
 
-test('test_array_hash',
-     executable('test_array_hash', 'array_hash.cpp',
+test('test_array',
+     executable('test_array', 'array.cpp',
                 dependencies: test_dep))
 
-test('test_tuple_hash',
-     executable('test_tuple_hash', 'tuple_hash.cpp',
+test('test_tuple',
+     executable('test_tuple', 'tuple.cpp',
                 dependencies: test_dep))
 
-test('test_variant_hash',
-     executable('test_variant_hash', 'variant_hash.cpp',
+test('test_variant',
+     executable('test_variant', 'variant.cpp',
                 dependencies: test_dep))
 
-test('test_optional_hash',
-     executable('test_optional_hash', 'optional_hash.cpp',
+test('test_optional',
+     executable('test_optional', 'optional.cpp',
                 dependencies: test_dep))
 
