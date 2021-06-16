@@ -2,15 +2,29 @@
 
 #include <concepts>
 #include <numeric>
-#include <optional>
-#include <string>
 #include <string_view>
 #include <type_traits>
-#include <variant>
 
 #include "hash/detail/hash_bytes.hpp"
 #include "hash/detail/hash_combine.hpp"
 #include "hash/detail/hash_concepts.hpp"
+
+// Forward declaration
+namespace std
+{
+  // Optional
+  template <typename>
+  class optional;
+
+  // Variant
+  template <typename...>
+  class variant;
+
+  struct monostate;
+
+  template <class Visitor, class... Variants>
+  constexpr decltype(auto) visit(Visitor&&, Variants&&...);
+}
 
 namespace reki
 {
