@@ -146,9 +146,9 @@ namespace reki::detail
                                    std::size_t           seed)
   {
     constexpr auto impl =
-      []()
+      []<std::size_t... I>(std::index_sequence<I...>)
       {
-        return []<std::size_t... I>(std::size_t acc, std::index_sequence<I...>)
+        return [](std::size_t acc) noexcept
         {
           return (acc * ... * (static_cast<void>(I), 131));
         };
