@@ -14,36 +14,50 @@
 
 namespace reki::detail
 {
-  template <available_as_bytes T>
+  template <std::size_t N>
   using destination_t
-  = std::conditional_t<sizeof(T) == 1, std::uint8_t,
-      std::conditional_t<sizeof(T) == 2, std::uint16_t,
-        std::conditional_t<sizeof(T) == 4, std::uint32_t,std::uint64_t>>>;
+  = std::conditional_t<N == 1, std::uint8_t,
+      std::conditional_t<N == 2, std::uint16_t,
+        std::conditional_t<N == 4, std::uint32_t,std::uint64_t>>>;
 
   template <available_as_bytes T, std::size_t N = std::dynamic_extent>
   requires (std::endian::native == std::endian::big)
   constexpr std::size_t from_bytes(std::span<const T, N> bytes)
   {
-    return std::accumulate(
-             bytes.begin(), bytes.end(), std::size_t{},
-             [](auto acc, auto byte)
-             {
-               return
-                (acc << (8 * sizeof(T))) + static_cast<destination_t<T>>(byte);
-             });
+    if constexpr (sizeof(T) == sizeof(std::size_t))
+    {
+      return bytes.front();
+    }
+    else
+    {
+      return std::accumulate(
+               bytes.begin(), bytes.end(), std::size_t{},
+               [](auto acc, auto byte)
+               {
+                 return (acc << (8 * sizeof(T)))
+                        + static_cast<destination_t<sizeof(T)>>(byte);
+               });
+    }
   }
 
   template <available_as_bytes T, std::size_t N = std::dynamic_extent>
   requires (std::endian::native == std::endian::little)
   constexpr std::size_t from_bytes(std::span<const T, N> bytes)
   {
-    return std::accumulate(
-             bytes.rbegin(), bytes.rend(), std::size_t{},
-             [](auto acc, auto byte)
-             {
-               return
-                (acc << (8 * sizeof(T))) + static_cast<destination_t<T>>(byte);
-             });
+    if constexpr (sizeof(T) == sizeof(std::size_t))
+    {
+      return bytes.front();
+    }
+    else
+    {
+      return std::accumulate(
+               bytes.rbegin(), bytes.rend(), std::size_t{},
+               [](auto acc, auto byte)
+               {
+                 return (acc << (8 * sizeof(T)))
+                        + static_cast<destination_t<sizeof(T)>>(byte);
+               });
+    }
   }
 
   constexpr std::size_t shift_mix(std::size_t v) noexcept
@@ -158,7 +172,7 @@ namespace reki::detail
              bytes.begin(), bytes.end(), seed,
              [](auto acc, auto byte)
              {
-               return impl(acc) + static_cast<destination_t<T>>(byte);
+               return impl(acc) + static_cast<destination_t<sizeof(T)>>(byte);
              });
   }
 
@@ -166,7 +180,10 @@ namespace reki::detail
   constexpr std::size_t hash_bytes(const T&    value,
                                    std::size_t seed = 0xc70f6907UL)
   {
-    const auto bytes = std::bit_cast<std::array<std::byte, sizeof(T)>>(value);
+    constexpr std::size_t gcd = std::gcd(sizeof(T), sizeof(std::size_t));
+
+    const auto bytes
+    = std::bit_cast<std::array<destination_t<gcd>, sizeof(T) / gcd>>(value);
 
     return hash_bytes(std::span{bytes}, std::move(seed));
   }
