@@ -67,13 +67,44 @@ namespace reki
   };
 
   template <typename T>
-  requires (std::floating_point<T> ||
+  requires ((std::floating_point<T> && !std::same_as<T, long double>) ||
            (std::integral<T> && sizeof(T) > sizeof(std::size_t)))
   struct hash<T> final
   {
     constexpr std::size_t operator()(T value) const
     {
       return value != T{0} ? detail::hash_bytes(std::move(value)) : 0;
+    }
+  };
+
+  // from https://github.com/gcc-mirror/gcc/blob/master/libstdc%2B%2B-v3/src/c%2B%2B11/hash_c%2B%2B0x.cc
+  template <>
+  struct hash<long double> final
+  {
+    constexpr std::size_t operator()(long double value) const
+    {
+      if (value == 0.0L)
+      {
+        return 0;
+      }
+
+      int exponent;
+
+      value = __builtin_frexpl(value, &exponent);
+
+      value = value < 0.0l ? -(value + 0.5l) : value;
+
+      const long double mult = __SIZE_MAX__ + 1.0l;
+
+      value *= mult;
+
+      const std::size_t hibits = static_cast<std::size_t>(value);
+
+      value = (value - static_cast<long double>(hibits)) * mult;
+
+      const std::size_t coeff = __SIZE_MAX__ / __LDBL_MAX_EXP__;
+
+      return hibits + static_cast<std::size_t>(value) + coeff * exponent;
     }
   };
 

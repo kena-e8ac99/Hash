@@ -103,7 +103,7 @@ int main()
 
   "double"_test = [](){ check<double>(); };
 
-  //"long double"_test = [](){ check<long double>(); };
+  "long double"_test = [](){ check<long double>(); };
 
   "nullptr_t"_test = [](){ check<std::nullptr_t>(); };
 
