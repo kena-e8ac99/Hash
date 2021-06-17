@@ -20,7 +20,7 @@ namespace reki::detail
 
   template <available_as_bytes T, std::size_t N = std::dynamic_extent>
   requires (std::endian::native == std::endian::big)
-  constexpr std::size_t from_bytes(std::span<const T, N> bytes)
+  inline constexpr std::size_t from_bytes(std::span<const T, N> bytes)
   {
     if constexpr (sizeof(T) == sizeof(std::size_t))
     {
@@ -40,7 +40,7 @@ namespace reki::detail
 
   template <available_as_bytes T, std::size_t N = std::dynamic_extent>
   requires (std::endian::native == std::endian::little)
-  constexpr std::size_t from_bytes(std::span<const T, N> bytes)
+  inline constexpr std::size_t from_bytes(std::span<const T, N> bytes)
   {
     if constexpr (sizeof(T) == sizeof(std::size_t))
     {
@@ -58,7 +58,7 @@ namespace reki::detail
     }
   }
 
-  constexpr std::size_t shift_mix(std::size_t v) noexcept
+  inline constexpr std::size_t shift_mix(std::size_t v) noexcept
   {
     return v ^ (v >> 47);
   }
@@ -66,8 +66,8 @@ namespace reki::detail
   // Murmur hash
   template <available_as_bytes T, std::size_t N = std::dynamic_extent>
   requires (sizeof(std::size_t) == 4)
-  constexpr std::size_t hash_bytes(std::span<const T, N> bytes,
-                                   std::size_t           seed)
+  inline constexpr std::size_t hash_bytes_impl(std::span<const T, N> bytes,
+                                               std::size_t           seed)
   {
     constexpr std::size_t m = 0x5bd1e995;
 
@@ -112,8 +112,8 @@ namespace reki::detail
 
   template <available_as_bytes T, std::size_t N = std::dynamic_extent>
   requires (sizeof(std::size_t) == 8)
-  constexpr std::size_t hash_bytes(std::span<const T, N> bytes,
-                                   std::size_t           seed)
+  inline constexpr std::size_t hash_bytes_impl(std::span<const T, N> bytes,
+                                               std::size_t           seed)
   {
     const auto len = bytes.size();
 
@@ -154,8 +154,8 @@ namespace reki::detail
 
   template <available_as_bytes T, std::size_t N = std::dynamic_extent>
   requires (sizeof(std::size_t) != 4 && sizeof(std::size_t) != 8)
-  constexpr std::size_t hash_bytes(std::span<const T, N> bytes,
-                                   std::size_t           seed)
+  inline constexpr std::size_t hash_bytes_impl(std::span<const T, N> bytes,
+                                               std::size_t           seed)
   {
     constexpr auto impl =
       []<std::size_t... I>(std::index_sequence<I...>)
@@ -175,22 +175,23 @@ namespace reki::detail
   }
 
   template <consteval_bit_castable T>
-  constexpr std::size_t hash_bytes(const T&    value,
-                                   std::size_t seed = 0xc70f6907UL)
+  inline constexpr std::size_t hash_bytes(const T&    value,
+                                          std::size_t seed = 0xc70f6907UL)
   {
     constexpr std::size_t gcd = std::gcd(sizeof(T), sizeof(std::size_t));
 
     const auto bytes
     = std::bit_cast<std::array<destination_t<gcd>, sizeof(T) / gcd>>(value);
 
-    return hash_bytes(std::span{bytes}, std::move(seed));
+    return hash_bytes_impl(std::span{bytes}, std::move(seed));
   }
 
   template <available_as_bytes T, std::size_t N = std::dynamic_extent>
-  constexpr std::size_t hash_bytes(std::span<const T, N> value,
-                                   std::size_t           seed = 0xc70f6907UL)
+  inline constexpr std::size_t
+    hash_bytes(std::span<const T, N> value,
+               std::size_t           seed = 0xc70f6907UL)
   {
-    return hash_bytes(std::move(value), std::move(seed));
+    return hash_bytes_impl(std::move(value), std::move(seed));
   }
 
 }

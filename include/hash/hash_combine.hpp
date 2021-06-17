@@ -4,7 +4,7 @@
 
 namespace reki
 {
-  constexpr void hash_combine(std::size_t& seed, std::size_t value) noexcept
+  inline constexpr void hash_combine(std::size_t& seed, std::size_t value) noexcept
   {
     if constexpr (sizeof(std::size_t) == 4)
     {
