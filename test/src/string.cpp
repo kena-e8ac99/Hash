@@ -18,19 +18,19 @@ int main()
 
       constexpr auto chars = view.data();
 
-      //std::string str{view};
+      std::string str{view};
 
       constexpr auto chars_result = reki::hash{}(chars);
 
       constexpr auto view_result  = reki::hash{}(view);
 
-      //auto str_result   = reki::hash{}(str);
+      auto str_result   = reki::hash{}(str);
 
       expect(eq(chars_result, view_result));
 
-      //expect(eq(view_result, str_result));
+      expect(eq(view_result, str_result));
 
-      //expect(eq(str_result, std::hash<std::string>{}(str)));
+      expect(eq(str_result, std::hash<std::string>{}(str)));
     };
 
   "char8_t*"_test =
@@ -40,19 +40,19 @@ int main()
 
       constexpr auto chars = view.data();
 
-      //std::u8string str{view};
+      std::u8string str{view};
 
       constexpr auto chars_result = reki::hash{}(chars);
 
       constexpr auto view_result  = reki::hash{}(view);
 
-      //auto str_result   = reki::hash{}(str);
+      auto str_result   = reki::hash{}(str);
 
       expect(eq(chars_result, view_result));
 
-      //expect(eq(view_result, str_result));
+      expect(eq(view_result, str_result));
 
-      //expect(eq(str_result, std::hash<std::u8string>{}(str)));
+      expect(eq(str_result, std::hash<std::u8string>{}(str)));
     };
 
   "char16_t*"_test =
@@ -62,19 +62,19 @@ int main()
 
       constexpr auto chars = view.data();
 
-      //std::u16string str{view};
+      std::u16string str{view};
 
       constexpr auto chars_result = reki::hash{}(chars);
 
       constexpr auto view_result  = reki::hash{}(view);
 
-      //auto str_result   = reki::hash{}(str);
+      auto str_result   = reki::hash{}(str);
 
       expect(eq(chars_result, view_result));
 
-      //expect(eq(view_result, str_result));
+      expect(eq(view_result, str_result));
 
-      //expect(eq(str_result, std::hash<std::u16string>{}(str)));
+      expect(eq(str_result, std::hash<std::u16string>{}(str)));
     };
 
   "char32_t*"_test =
@@ -84,19 +84,19 @@ int main()
 
       constexpr auto chars = view.data();
 
-      //std::u32string str{view};
+      std::u32string str{view};
 
       constexpr auto chars_result = reki::hash{}(chars);
 
       constexpr auto view_result  = reki::hash{}(view);
 
-      //auto str_result   = reki::hash{}(str);
+      auto str_result   = reki::hash{}(str);
 
       expect(eq(chars_result, view_result));
 
-      //expect(eq(view_result, str_result));
+      expect(eq(view_result, str_result));
 
-      //expect(eq(str_result, std::hash<std::u32string>{}(str)));
+      expect(eq(str_result, std::hash<std::u32string>{}(str)));
     };
 
   "wchar_t*"_test =
@@ -106,18 +106,18 @@ int main()
 
       constexpr auto chars = view.data();
 
-      //std::wstring str{view};
+      std::wstring str{view};
 
       constexpr auto chars_result = reki::hash{}(chars);
 
       constexpr auto view_result  = reki::hash{}(view);
 
-      //auto str_result   = reki::hash{}(str);
+      auto str_result   = reki::hash{}(str);
 
       expect(eq(chars_result, view_result));
 
-      //expect(eq(view_result, str_result));
+      expect(eq(view_result, str_result));
 
-      //expect(eq(str_result, std::hash<std::wstring>{}(str)));
+      expect(eq(str_result, std::hash<std::wstring>{}(str)));
     };
 }
