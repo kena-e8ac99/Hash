@@ -6,7 +6,7 @@
 #include <type_traits>
 
 #include "hash/detail/hash_bytes.hpp"
-#include "hash/detail/hash_combine.hpp"
+#include "hash/hash_combine.hpp"
 #include "hash/detail/hash_concepts.hpp"
 
 // Forward declaration
@@ -155,7 +155,7 @@ namespace reki
                  hash<value_type>{}(*std::ranges::begin(value)),
                  [](auto acc, const auto& value)
                  {
-                   detail::hash_combine(acc, hash<value_type>{}(value));
+                   hash_combine(acc, hash<value_type>{}(value));
 
                    return std::move(acc);
                  });
@@ -170,7 +170,7 @@ namespace reki
     {
       std::size_t seed = hash<T>{}(value.first);
 
-      detail::hash_combine(seed, hash<U>{}(value.second));
+      hash_combine(seed, hash<U>{}(value.second));
 
       return seed;
     }
@@ -189,7 +189,7 @@ namespace reki
 
             ([&seed]<class U>(const U& value)
             {
-              detail::hash_combine(seed, hash<U>{}(value));
+              hash_combine(seed, hash<U>{}(value));
             }(value), ...);
 
             return seed;
