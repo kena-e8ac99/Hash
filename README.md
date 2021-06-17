@@ -9,7 +9,7 @@ All hash values calculated by this library are the same as libstdc ++ except cha
 # Note
 
 - This library supports types that meet one of the following requirements. If you use unsupported types, a compile error will occur.
-  1. **trivally copyable type** and satisfies the following.
+  1. **trivally copyable type** excluding **long double** and satisfies the following.
      - is not a union type;
      - is not a pointer type;
      - is not a pointer to member type;
