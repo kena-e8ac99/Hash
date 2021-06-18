@@ -77,12 +77,6 @@ namespace reki
     }
   };
 
-  template <>
-  struct hash<long double> final
-  {
-    hash() = delete;
-  };
-
   template <typename T>
   requires std::is_enum_v<T>
   struct hash<T> final
