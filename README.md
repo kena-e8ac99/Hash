@@ -45,7 +45,4 @@ assert(view_result == std::hash<std::string_view>{}(view));
 - GCC   11.1.0
 - Clang 12.0.0
 
-# License
-
-[MIT License](https://en.wikipedia.org/wiki/MIT_License)
 
