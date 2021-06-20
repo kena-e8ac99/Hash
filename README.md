@@ -9,13 +9,13 @@ All hash values calculated by this library are the same as libstdc ++ except cha
 # Note
 
 - This library supports types that meet one of the following requirements. If you use unsupported types, a compile error will occur.
-  1. **trivally copyable type** excluding **long double** and satisfies the following.
+  1. `trivally copyable type` excluding `long double` and satisfies the following.
      - is not a union type;
      - is not a pointer type;
      - is not a pointer to member type;
      - is not a volatile-qualified type; and
      - has no non-static data member of reference type.
-  2. **char\***, **input range**, **pair**, **tuple**, **optional**, or **variant** type whose value_type or element_type satisfies the above item or this item.
+  2. `char*`, `input range`, `pair`, `tuple`, `optional`, or `variant` type whose value_type or element_type satisfies the above item or this item.
      - Ex. std::array<std::tuple<double, std::string_view, const char32_t*>, 1>
 
 - Supported types use values instead of adresses to calculate hashes.
